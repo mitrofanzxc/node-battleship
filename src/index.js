@@ -1,1 +1,1 @@
-console.log("INIT");
+console.log('INIT');
