@@ -1,9 +1,10 @@
 import { config } from 'dotenv';
 import { WebSocket, WebSocketServer } from 'ws';
 
-import { App } from './App';
+import App from './app';
 
 config();
+const app = new App();
 
 const port: number = (process.env.SERVER_PORT && parseInt(process.env.SERVER_PORT)) || 3000;
 
@@ -14,7 +15,7 @@ const server = new WebSocketServer({ port }, () => {
 server.on('connection', (ws: WebSocket, req) => {
     ws.on('error', console.error);
 
-    if (req.headers.cookie) App.authUserByCookie(ws, req.headers.cookie);
+    if (req.headers.cookie) app.authUserByCookie(ws, req.headers.cookie);
 
     console.log('Server: connection established');
 
@@ -22,7 +23,7 @@ server.on('connection', (ws: WebSocket, req) => {
         console.log(`Server: socket got the message: ${message.toString()}`);
 
         try {
-            App.handleMessage(ws, message.toString());
+            app.handleMessage(ws, message.toString());
         } catch (err) {
             console.error(err);
         }
