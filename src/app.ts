@@ -5,7 +5,7 @@ import Messenger, {
     WebSocket,
     MessageBodyError,
 } from './services/messenger';
-import Database from './services/db.service';
+import Database from './services/db';
 
 import { ModelId } from './models/abstract';
 import User, { UserObject } from './models/user';
