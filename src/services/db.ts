@@ -1,6 +1,7 @@
 export type EntityID = number;
 
 let lastIncrement = Date.now();
+
 export const randomEntityID = (): EntityID => {
     return lastIncrement++;
 };
@@ -9,12 +10,12 @@ export interface TableRow {
     readonly id: EntityID;
 }
 
-export class Table<T extends TableRow> {
-    private items: { [key: EntityID]: T } = {};
+export class Table<Type extends TableRow> {
+    private items: { [key: EntityID]: Type } = {};
 
-    add(data: object): T {
+    add(data: object): Type {
         const id = randomEntityID();
-        const row = { ...data, id } as T;
+        const row = { ...data, id } as Type;
         return (this.items[id] = row);
     }
 
@@ -22,27 +23,27 @@ export class Table<T extends TableRow> {
         return delete this.items[id];
     }
 
-    update(id: EntityID, data: T): T {
+    update(id: EntityID, data: Type): Type {
         const item = this.get(id);
-        data = { ...(item ?? {}), ...data } as T;
+        data = { ...(item ?? {}), ...data } as Type;
         return (this.items[id] = data);
     }
 
-    get(id: EntityID): T | null {
+    get(id: EntityID): Type | null {
         return this.items[id] ?? null;
     }
 
-    all(): T[] {
+    all(): Type[] {
         return Object.values(this.items);
     }
 }
 
-export default class Database {
+export class Database {
     private tables: { [key: string]: Table<TableRow> } = {};
-    getTable<T>(name: string): Table<T & TableRow> {
+    getTable<Type>(name: string): Table<Type & TableRow> {
         return (
-            (this.tables[name] as Table<T & TableRow>) ??
-            (this.tables[name] = new Table<T & TableRow>())
+            (this.tables[name] as Table<Type & TableRow>) ??
+            (this.tables[name] = new Table<Type & TableRow>())
         );
     }
 }

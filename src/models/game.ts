@@ -1,8 +1,10 @@
+import { EventEmitter } from 'node:events';
+
 import { ResponceTypes } from '../services/messenger';
 
-import { ModelId, randomModelId } from './abstract';
-import Player from './player';
-import { EventEmitter } from 'node:events';
+import type { ModelId } from './abstract';
+import { randomModelId } from './abstract';
+import { Player } from './player';
 
 export class GameError extends Error {}
 export class GamePlayersError extends GameError {
@@ -156,6 +158,7 @@ export class Board {
                 }
             }
         }
+
         return result;
     }
 
@@ -164,14 +167,12 @@ export class Board {
             const [x, y] = coord;
 
             if (!direction) {
-                // if horizontal
                 for (let xl = x; xl < x + length; xl++) {
                     if (!coords.some((c) => c[0] === xl && c[1] === y)) {
                         return false;
                     }
                 }
             } else {
-                // if vertical
                 for (let yl = y; yl < y + length; yl++) {
                     if (!coords.some((c) => c[0] === x && c[1] === yl)) {
                         return false;
@@ -273,7 +274,7 @@ export enum GameEvents {
     FINISHED = 'finished',
 }
 
-export default class Game extends EventEmitter {
+export class Game extends EventEmitter {
     readonly id: ModelId;
     readonly players: Player[];
 
@@ -359,7 +360,7 @@ export default class Game extends EventEmitter {
         const board = this.getBoard(opponent);
 
         if (player !== this.turn) {
-            this.sendTurn(false); // again
+            this.sendTurn(false);
             return;
         }
 

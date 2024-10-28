@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { WebSocket, WebSocketServer } from 'ws';
 
-import App from './app';
+import { App } from './app';
 
 config();
 const app = new App();

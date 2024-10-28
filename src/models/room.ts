@@ -1,8 +1,9 @@
-import { ModelId, randomModelId } from './abstract';
-import Player from './player';
-import Game, { GamePlayersError } from './game';
+import type { ModelId } from './abstract';
+import { randomModelId } from './abstract';
+import { Player } from './player';
+import { Game, GamePlayersError } from './game';
 
-export default class Room {
+export class Room {
     readonly id: ModelId;
     protected players: Map<ModelId, Player> = new Map();
 

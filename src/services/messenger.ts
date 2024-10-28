@@ -1,4 +1,4 @@
-import { WebSocket as WsWebSocket } from 'ws';
+import type { WebSocket as WsWebSocket } from 'ws';
 
 export enum RequestTypes {
     REG = 'reg',
@@ -39,7 +39,7 @@ export type WebSocketPlayer = WebSocket | BotSocket;
 export class MessageError extends Error {}
 export class MessageBodyError extends MessageError {}
 
-export default class Messenger {
+export class Messenger {
     static parseMessage(m: string = ''): Message | null {
         try {
             const message = JSON.parse(m);

@@ -1,8 +1,9 @@
-import User from './user';
+import type { WebSocketPlayer } from '../services/messenger';
+import { Messenger, ResponceTypes } from '../services/messenger';
 
-import Messenger, { ResponceTypes, WebSocketPlayer } from '../services/messenger';
+import { User } from './user';
 
-export default class Player {
+export class Player {
     readonly ws: WebSocketPlayer;
     readonly user: User;
 

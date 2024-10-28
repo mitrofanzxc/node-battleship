@@ -14,12 +14,15 @@ export const hasRequiredFields = <Type>(obj: unknown, requiredFields: FieldsMap)
     if (obj === null || typeof obj !== 'object') {
         return true;
     }
+
     for (const key of Object.keys(requiredFields)) {
         const params = requiredFields[key];
+
         const objectItem = hasKey(key, obj) ? (obj[key] as unknown) : undefined;
         if (!params) {
             continue;
         }
+
         if (objectItem !== undefined) {
             switch (params.type) {
                 case 'string':
@@ -29,6 +32,7 @@ export const hasRequiredFields = <Type>(obj: unknown, requiredFields: FieldsMap)
                     ) {
                         return true;
                     }
+
                     break;
                 case 'object':
                     if (!(typeof objectItem === 'object')) {
@@ -38,6 +42,7 @@ export const hasRequiredFields = <Type>(obj: unknown, requiredFields: FieldsMap)
                             return true;
                         }
                     }
+
                     break;
                 case 'array':
                     if (!(objectItem instanceof Array)) {
@@ -66,16 +71,19 @@ export const hasRequiredFields = <Type>(obj: unknown, requiredFields: FieldsMap)
                             }
                         }
                     }
+
                     break;
                 case 'number':
                     if (!(typeof objectItem === 'number')) {
                         return true;
                     }
+
                     break;
             }
         } else if (params.required) {
             return true;
         }
     }
+
     return false;
 };

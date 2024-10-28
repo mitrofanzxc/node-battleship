@@ -1,11 +1,12 @@
+import type { WebSocket, BotSocket } from '../services/messenger';
+import { Messenger, ResponceTypes } from '../services/messenger';
+
 import { randomModelId } from './abstract';
-import User from './user';
-import Player from './player';
-import Game, { GameError } from './game';
+import { User } from './user';
+import { Player } from './player';
+import { Game, GameError } from './game';
 
-import Messenger, { WebSocket, BotSocket, ResponceTypes } from '../services/messenger';
-
-export default class Bot extends Player {
+export class Bot extends Player {
     private game: Game | undefined;
 
     constructor() {
@@ -18,6 +19,7 @@ export default class Bot extends Player {
             on: () => {
                 return {} as WebSocket;
             },
+
             send: (message) => {
                 const responce = Messenger.parseMessage(message.toString());
                 if (
@@ -33,6 +35,7 @@ export default class Bot extends Player {
                 }
             },
         };
+
         super(user, ws);
         console.log(`Bot: created as ${this.user.id}`);
     }

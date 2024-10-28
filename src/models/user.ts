@@ -1,12 +1,15 @@
-import { FieldsMap, hasRequiredFields } from '../utils/fields';
-import DatabaseModel, { ModelId, ModelErrorFields } from './abstract';
+import type { DatabaseModel, ModelId } from './abstract';
+import { ModelErrorFields } from './abstract';
+
+import type { FieldsMap } from '../utils/fields';
+import { hasRequiredFields } from '../utils/fields';
 
 export interface UserObject {
     name: string;
     password: string;
 }
 
-export default class User implements DatabaseModel {
+export class User implements DatabaseModel {
     readonly id: ModelId;
     readonly name: string;
     protected password: string;

@@ -1,18 +1,16 @@
 import EventEmitter from 'node:events';
-import Messenger, {
-    RequestTypes,
-    ResponceTypes,
-    WebSocket,
-    MessageBodyError,
-} from './services/messenger';
-import Database from './services/db';
 
-import { ModelId } from './models/abstract';
-import User, { UserObject } from './models/user';
-import Player from './models/player';
-import Bot from './models/bot';
-import Room from './models/room';
-import Game, { GameEvents } from './models/game';
+import type { WebSocket } from './services/messenger';
+import { Messenger, RequestTypes, ResponceTypes, MessageBodyError } from './services/messenger';
+import { Database } from './services/db';
+
+import type { ModelId } from './models/abstract';
+import type { UserObject } from './models/user';
+import { User } from './models/user';
+import { Player } from './models/player';
+import { Bot } from './models/bot';
+import { Room } from './models/room';
+import { Game, GameEvents } from './models/game';
 
 export class AppError extends Error {}
 
@@ -21,7 +19,7 @@ export enum AppEvents {
     ROOMS = 'rooms',
 }
 
-export default class App extends EventEmitter {
+export class App extends EventEmitter {
     private _database: Database = new Database();
     private _players: Map<ModelId, Player> = new Map<ModelId, Player>();
     private _rooms: Map<ModelId, Room> = new Map<ModelId, Room>();
@@ -90,12 +88,14 @@ export default class App extends EventEmitter {
             const room = Array.from(this._rooms.values()).find((room) =>
                 room.getPlayers().includes(player),
             );
+
             if (room) {
                 return room;
             }
         }
         const room = new Room(player);
         this._rooms.set(room.id, room);
+
         return room;
     }
 
@@ -128,12 +128,12 @@ export default class App extends EventEmitter {
     }
 
     authUserByCookie(ws: WebSocket, cookie: string) {
-        // not implemented
         cookie && ws ? undefined : undefined;
     }
 
     handleMessage(ws: WebSocket, message: string) {
         const request = Messenger.parseMessage(message);
+
         if (!request) {
             throw new MessageBodyError();
         }
@@ -170,6 +170,7 @@ export default class App extends EventEmitter {
                     });
                 }
             }
+
             return;
         }
 
@@ -186,12 +187,15 @@ export default class App extends EventEmitter {
             case RequestTypes.ROOM_CREATE:
                 this.createRoom(player);
                 this.emit(AppEvents.ROOMS);
+
                 break;
             case RequestTypes.ROOM_PLAYER: {
                 const room = this.getRoom(request.data.indexRoom as ModelId);
+
                 if (!room) {
                     throw new AppError(`Room doesn't exist`);
                 }
+
                 room.addPlayer(player);
 
                 if (room.isFull()) {
@@ -231,29 +235,38 @@ export default class App extends EventEmitter {
             }
             case RequestTypes.GAME_SHIPS: {
                 const game = this.getGame(request.data.gameId as ModelId);
+
                 if (!game) {
                     throw new AppError();
                 }
+
                 game.addBoard(
                     player,
-                    typeof request.data.ships === 'object' ? request.data.ships : undefined, // autogenerating
+                    typeof request.data.ships === 'object' ? request.data.ships : undefined,
                 );
+
                 break;
             }
             case RequestTypes.GAME_ATACK: {
                 const game = this.getGame(request.data.gameId as ModelId);
+
                 if (!game) {
                     throw new AppError();
                 }
+
                 game.atack(player, request.data.x as number, request.data.y as number);
+
                 break;
             }
             case RequestTypes.GAME_RANDOM_ATACK: {
                 const game = this.getGame(request.data.gameId as ModelId);
+
                 if (!game) {
                     throw new AppError();
                 }
+
                 game.autoAtack(player);
+
                 break;
             }
         }
